@@ -2935,6 +2935,22 @@ void ThreadKill(int mode)
             StopVideoDemux();
         }
 
+
+
+        //==========================================================================
+        //HeadFile‚Åˆ—‚·‚é’iŠK‚Å•W€“ü—Í‚©‚ç’Ç‰Á“Ç‚İ‚İ‚ğ‚µ‚½‚©H
+        if (D2V_Flag == false && GetExtraData_fromStdin)
+        {
+          _close(fdHeadFile);
+          remove(HeadFilePath.c_str());
+          _fcloseall();
+          exit(1);
+        }
+
+        //==========================================================================
+
+
+
         _fcloseall();
 
         if (D2V_Flag)
