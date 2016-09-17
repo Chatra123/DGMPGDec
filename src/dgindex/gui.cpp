@@ -4539,12 +4539,13 @@ void UpdateWindowText(int mode)
         if (Mode_PipeInput)
         {
           percent = (float)(100.0*(process.run - process.start + fpos_tracker) / (process.end - process.start));
+          remain = 0;
         }
         else
         {
           percent = (float)(100.0*(process.run - process.start + _telli64(Infile[CurrentFile])) / (process.end - process.start));
+          remain = (int)((timing.ed - timing.op)*(100.0 - percent) / percent) / 1000;
         }
-        remain = (int)((timing.ed-timing.op)*(100.0-percent)/percent)/1000;
 
         sprintf(szBuffer, "%d:%02d:%02d", elapsed/3600, (elapsed%3600)/60, elapsed%60);
         SetDlgItemText(hDlg, IDC_ELAPSED, szBuffer);
