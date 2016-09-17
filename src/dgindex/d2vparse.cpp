@@ -457,6 +457,8 @@ int fix_d2v(HWND hWnd, char *Input, int test_only)
             return 0;
         if (found == true)
         {
+            if (Mode_UseBad)
+              return 0;
             if (!CLIActive)
             {
                 if (MessageBox(hWnd, "A field order transition was detected.\n"
