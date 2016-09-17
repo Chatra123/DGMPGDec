@@ -171,6 +171,12 @@ void WriteD2VLine(int finish)
     else strcat(D2VLine, "\n");
     fprintf(D2VFile, "%s", D2VLine);
     gop_entries_ndx = 0;
+
+    if (6 < time(NULL) - timeFlushD2VFile)
+    {
+      fflush(D2VFile);
+      timeFlushD2VFile = time(NULL);
+    }
 }
 
 void SetFaultFlag(int val)
