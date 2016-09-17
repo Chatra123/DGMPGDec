@@ -1078,9 +1078,9 @@ proceed:
                     {
                       if (Mode_NoDialog == false)
                         MessageBox(hWnd, "No data. Check your PIDS.", "Save Project", MB_OK | MB_ICONWARNING);
-                        if (ExitOnEnd)
-                            exit(EXIT_FAILURE);
-                        break;
+                      if (ExitOnEnd || Mode_Hide)
+                          exit(EXIT_FAILURE);
+                      break;
                     }
                     if (!CLIActive && (FO_Flag == FO_FILM) && ((mpeg_type == IS_MPEG1) || ((int) (frame_rate * 1000) != 29970)))
                     {

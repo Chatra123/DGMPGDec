@@ -595,7 +595,7 @@ retry_sync:
           if (Mode_NoDialog == false)
             MessageBox(hWnd, "Cannot find audio or video data. Ensure that your PIDs\nare set correctly in the Stream menu. Refer to the\nUsers Manual for details.",
                        NULL, MB_OK | MB_ICONERROR);
-            ThreadKill(MISC_KILL);
+          ThreadKill(MISC_KILL);
         }
         else if ((Start_Flag || process.locate == LOCATE_SCROLL) && !pmt_check && time - start > check_time)
         {
@@ -1573,7 +1573,7 @@ void Next_PVA_Packet()
         {
           if (Mode_NoDialog == false)
             MessageBox(hWnd, "Cannot find video data.", NULL, MB_OK | MB_ICONERROR);
-            ThreadKill(MISC_KILL);
+          ThreadKill(MISC_KILL);
         }
 
         // Search for a good sync.

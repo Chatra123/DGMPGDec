@@ -202,7 +202,9 @@ do_rip_play:
                 // EOF
               if (Mode_NoDialog == false)
                 MessageBox(hWnd, "File contains all nulls!", NULL, MB_OK | MB_ICONERROR);
-                return 0;
+              if (Mode_Hide)
+                ThreadKill(MISC_KILL);
+              return 0;
             }
             if (buf[0] != 0)
             {
@@ -287,7 +289,7 @@ try_again:
                 // We didn't find a sequence header.
               if (Mode_NoDialog == false)
                 MessageBox(hWnd, "No video sequence header found!", NULL, MB_OK | MB_ICONERROR);
-                ThreadKill(MISC_KILL);
+              ThreadKill(MISC_KILL);
             }
             Flush_Buffer(8);
             count++;
@@ -302,7 +304,9 @@ try_again:
             {
               if (Mode_NoDialog == false)
                 MessageBox(hWnd, "Cannot find video stream!", NULL, MB_OK | MB_ICONERROR);
-                return 0;
+              if (Mode_Hide)
+                ThreadKill(MISC_KILL);
+              return 0;
             }
             if (is_program_stream)
             {
