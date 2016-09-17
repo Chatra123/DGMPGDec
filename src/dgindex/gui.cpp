@@ -2947,6 +2947,39 @@ void ThreadKill(int mode)
           exit(1);
         }
 
+        //ファイル終端が確定したので書き換え
+        if (D2V_Flag && Mode_PipeInput)
+        {
+          //HeadFile削除
+          _close(fdHeadFile);
+          remove(HeadFilePath.c_str());
+
+          //d2v全行読み込み
+          //　\r\nは\nとして取得される。
+          std::vector<std::string> text;
+          char buff[256];
+          _fseeki64(D2VFile, 0, SEEK_SET);
+          while (fgets(buff, 256, D2VFile) != NULL)
+          {
+            std::string line = std::string(buff);
+            if (line.find("Location=0,0,0,0") == 0)
+            {
+              //rightlba更新
+              __int64 rightlba = (int)(fpos_tracker / SECTOR_SIZE);
+              sprintf(buff, "Location=0,0,0,%I64x\n", rightlba);
+              line = std::string(buff);
+            }
+            text.emplace_back(line);
+          }
+
+          //ファイルリセット、再書込
+          //　\nは\r\nで書き込まれる。
+          fclose(D2VFile);
+          D2VFile = _fsopen(D2VFilePath, "w+", _SH_DENYWR);
+          if (D2VFile)
+            for (auto line : text)
+              fprintf(D2VFile, "%s", line.c_str());
+        }
         //==========================================================================
 
 
