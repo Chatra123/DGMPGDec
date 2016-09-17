@@ -254,7 +254,7 @@ NEW_VERSION:
         HDDisplay = HD_DISPLAY_SHRINK_BY_HALF;
         for (i = 0; i < 4; i++)
             mMRUList[i][0] = 0;
-        InfoLog_Flag = 1;
+        InfoLog_Flag = 0;
         BMPPathString[0] = 0;
         UseMPAExtensions = 0;
         NotifyWhenDone = 0;
