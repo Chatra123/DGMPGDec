@@ -1097,7 +1097,7 @@ proceed:
                         sprintf(szBuffer, "%s.d2v", szOutput);
                         if (CLIActive)
                         {
-                            if ((D2VFile = fopen(szBuffer, "w+")) == 0)
+                            if ((D2VFile = _fsopen(szBuffer, "w+", _SH_DENYWR)) == NULL)
                             {
                                 if (ExitOnEnd)
                                 {
@@ -1115,7 +1115,7 @@ proceed:
                         }
                         else
                         {
-                            if (D2VFile = fopen(szBuffer, "r"))
+                            if (D2VFile = _fsopen(szBuffer, "r", _SH_DENYNO))
                             {
                                 char line[255];
 
@@ -1126,7 +1126,7 @@ proceed:
                                     break;
 
                             }
-                            D2VFile = fopen(szBuffer, "w+");
+                            D2VFile = _fsopen(szBuffer, "w+", _SH_DENYWR);
                             strcpy(D2VFilePath, szBuffer);
                         }
 
@@ -1197,7 +1197,7 @@ D2V_PROCESS:
                         char line[2048];
                         int D2Vformat;
 
-                        D2VFile = fopen(szInput, "r");
+                        D2VFile = _fsopen(szBuffer, "r", _SH_DENYNO);
 
                         // Validate the D2V file.
                         fgets(line, 2048, D2VFile);
