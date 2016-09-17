@@ -115,6 +115,7 @@
     <ClCompile Include="..\..\src\dgindex\norm.cpp" />
     <ClCompile Include="..\..\src\dgindex\parse_cli.cpp" />
     <ClCompile Include="..\..\src\dgindex\pat.cpp" />
+    <ClCompile Include="..\..\src\dgindex\pf_Initialize.cpp" />
     <ClCompile Include="..\..\src\dgindex\store.cpp" />
     <ClCompile Include="..\..\src\dgindex\strverscmp.cpp" />
     <ClCompile Include="..\..\src\dgindex\wavefs44.cpp" />

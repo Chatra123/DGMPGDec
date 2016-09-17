@@ -637,6 +637,8 @@ NEW_VERSION:
         // CLI invocation.
         if (parse_cli(lpCmdLine, ucCmdLine) != 0)
             exit(0);
+        if (Initialize_pf() != 0)
+          exit(0);
         if (CLIParseD2V & PARSE_D2V_INPUT_FILE)
             SendMessage(hWnd, CLI_PARSE_D2V_MESSAGE, 0, 0);
         if (NumLoadedFiles)
