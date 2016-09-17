@@ -1076,6 +1076,7 @@ skip:
 proceed:
                     if (!Check_Flag)
                     {
+                      if (Mode_NoDialog == false)
                         MessageBox(hWnd, "No data. Check your PIDS.", "Save Project", MB_OK | MB_ICONWARNING);
                         if (ExitOnEnd)
                             exit(EXIT_FAILURE);

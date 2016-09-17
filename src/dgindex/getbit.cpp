@@ -592,6 +592,7 @@ retry_sync:
         time = timeGetTime();
         if (time - start > time_limit)
         {
+          if (Mode_NoDialog == false)
             MessageBox(hWnd, "Cannot find audio or video data. Ensure that your PIDs\nare set correctly in the Stream menu. Refer to the\nUsers Manual for details.",
                        NULL, MB_OK | MB_ICONERROR);
             ThreadKill(MISC_KILL);
@@ -1570,6 +1571,7 @@ void Next_PVA_Packet()
         time = timeGetTime();
         if (time - start > 2000)
         {
+          if (Mode_NoDialog == false)
             MessageBox(hWnd, "Cannot find video data.", NULL, MB_OK | MB_ICONERROR);
             ThreadKill(MISC_KILL);
         }
