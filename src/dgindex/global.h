@@ -38,6 +38,14 @@
 #include "resource.h"
 #include "pat.h"
 
+
+#include <random>
+#include <thread>
+#include <chrono>
+#include <string>
+#include <vector>
+using namespace std::chrono;
+
 #ifdef GLOBAL
 #define XTN
 #else
@@ -134,7 +142,7 @@ XTN bool bIsWindowsXPorLater;
 #define CHROMA444       3
 
 #define SECTOR_SIZE             2048
-#define BUFFER_SIZE             2048
+#define BUFFER_SIZE             128000
 #define MAX_FILE_NUMBER         512
 #define MAX_PICTURES_PER_GOP    500
 #define MAX_GOPS                1000000
@@ -281,6 +289,55 @@ typedef struct{
     bool                    sse2;
 } Cpu;
 XTN Cpu cpu;
+
+
+
+
+
+//====================================================
+//Mode
+XTN bool Mode_PipeInput;
+XTN bool Mode_NoDialog;                //suspend some dialog
+XTN bool Mode_Hide;                    //commandline -Hide
+XTN bool Mode_UseBad;                  //ignore field order transition
+
+                                       //Stdin
+XTN int fdStdin;                       //stdin file descriptor
+XTN __int64 fpos_tracker;              //HeadFile & stdin streamの違いを意識しないファイルポジション
+XTN std::string Stdin_SourcePath;      //d2vファイル３行目に書き込むＴＳファイル名
+XTN bool IsClosed_stdin;               //パイプ接続がきれたか？
+
+                                       //HeadFile
+                                       //　ストリーム先頭部分をファイルに保存
+XTN std::string HeadFilePath;
+XTN int fdHeadFile;                    //HeadFile file descriptor 
+XTN double HeadFileSize_CmdLine;       //コマンドライン指定のファイルサイズ  MiB
+
+
+                                       //HeadFileで処理する段階で標準入力から追加読み込みをしたか？
+                                       //  Seek()が多用される段階で標準入力を読み込むとTSファイルの連続性が崩れる。
+                                       //  １度目の void ThreadKill(int mode)で判定し、trueならプロセス終了。
+                                       //  HeadFileSize_CmdLineを増やして対応する。
+XTN bool GetExtraData_fromStdin;       //Stdinから追加読み込みをしたか？
+
+                                       //d2v
+XTN time_t timeFlushD2VFile;           //d2vファイルを更新した時間
+
+                                       //ファイル読込み速度制限
+XTN double tickReadSize_speedlimit;    //500ms間の読込み量
+XTN time_point<system_clock, system_clock::duration> tickBeginTime_speedlimit;//500ms間の計測開始時間
+XTN double SpeedLimit_CmdLine;         //コマンドライン指定の最大読込み速度  MiB/sec
+XTN double SpeedLimit;                 //              実際の最大読込み速度  Byte/sec
+
+                                       //function
+XTN int Initialize_pf(void);
+XTN int Initialize_stdin(void);
+XTN int read_stdin(void *buff, int req_size);
+XTN void ReadSpeedLimit(unsigned int read_size);
+//====================================================
+
+
+
 
 /* decoder operation control flags */
 XTN bool Check_Flag;
