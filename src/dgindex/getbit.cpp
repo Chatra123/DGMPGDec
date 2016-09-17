@@ -561,7 +561,7 @@ void Next_Transport_Packet()
     static unsigned int prev_code;
     bool pmt_check = false;
     unsigned int check_num_pmt = 0;
-    unsigned int time_limit = 5000;
+    unsigned int time_limit = 20 * 1000;
 #ifdef _DEBUG
     time_limit = 300000;    /* Change 5 minutes. */
 #endif
@@ -586,6 +586,7 @@ void Next_Transport_Packet()
             Packet_Length -= 4;
         }
 retry_sync:
+        const unsigned int check_time = Mode_PipeInput ? 500 * 5 : 500;
         // Don't loop forever. If we don't get data
         // in a reasonable time (5 secs) we exit.
         time = timeGetTime();
@@ -595,7 +596,7 @@ retry_sync:
                        NULL, MB_OK | MB_ICONERROR);
             ThreadKill(MISC_KILL);
         }
-        else if ((Start_Flag || process.locate == LOCATE_SCROLL) && !pmt_check && time - start > 500)
+        else if ((Start_Flag || process.locate == LOCATE_SCROLL) && !pmt_check && time - start > check_time)
         {
             pat_parser.InitializePMTCheckItems();
             pmt_check = true;
@@ -1563,6 +1564,7 @@ void Next_PVA_Packet()
     start = timeGetTime();
     for (;;)
     {
+        unsigned int timeout = Mode_PipeInput ? 2000 * 5 : 2000;
         // Don't loop forever. If we don't get data
         // in a reasonable time (1 secs) we exit.
         time = timeGetTime();
