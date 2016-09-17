@@ -625,8 +625,16 @@ retry_sync:
         // for indexing when an I frame is detected.
         if (D2V_Flag)
         {
-            PackHeaderPosition = _telli64(Infile[CurrentFile])
-                                 - (__int64)BUFFER_SIZE + (__int64)Rdptr - (__int64)Rdbfr - 1;
+            if (Mode_PipeInput)
+            {
+              PackHeaderPosition = fpos_tracker
+                - (__int64)BUFFER_SIZE + (__int64)Rdptr - (__int64)Rdbfr - 1;
+            }
+            else
+            {
+              PackHeaderPosition = _telli64(Infile[CurrentFile])
+                - (__int64)BUFFER_SIZE + (__int64)Rdptr - (__int64)Rdbfr - 1;
+            }
         }
         // For M2TS (blueray) files, index the extra 4 bytes in front of the sync byte,
         // because DGDecode will expect to see them.
@@ -1593,8 +1601,16 @@ void Next_PVA_Packet()
         // for indexing when an I frame is detected.
         if (D2V_Flag)
         {
-            PackHeaderPosition = _telli64(Infile[CurrentFile])
-                                 - (__int64)BUFFER_SIZE + (__int64)Rdptr - (__int64)Rdbfr - 3;
+            if (Mode_PipeInput)
+            {
+              PackHeaderPosition = fpos_tracker
+                - (__int64)BUFFER_SIZE + (__int64)Rdptr - (__int64)Rdbfr - 3;
+            }
+            else
+            {
+              PackHeaderPosition = _telli64(Infile[CurrentFile])
+                - (__int64)BUFFER_SIZE + (__int64)Rdptr - (__int64)Rdbfr - 3;
+            }
         }
 
         // Pick up the remaining packet header fields.
@@ -1841,8 +1857,11 @@ void Next_Packet()
             case PACK_START_CODE:
                 if (D2V_Flag)
                 {
+                  if (Mode_PipeInput)
+                    PackHeaderPosition = fpos_tracker;
+                  else
                     PackHeaderPosition = _telli64(Infile[CurrentFile]);
-                    PackHeaderPosition = PackHeaderPosition - (__int64)BUFFER_SIZE + (__int64)Rdptr - 4 - (__int64)Rdbfr;
+                  PackHeaderPosition = PackHeaderPosition - (__int64)BUFFER_SIZE + (__int64)Rdptr - 4 - (__int64)Rdbfr;
                 }
                 if (((tmp = Get_Byte()) & 0xf0) == 0x20)
                 {
@@ -3021,6 +3040,11 @@ void UpdateInfo()
             processed += Infilelength[i];
         }
         processed += _telli64(Infile[CurrentFile]);
+        processed *= TRACK_PITCH;
+        if (Mode_PipeInput)
+          processed += fpos_tracker;
+        else
+          processed += _telli64(Infile[CurrentFile]);
         processed *= TRACK_PITCH;
         processed /= Infiletotal;
         trackpos = (int) processed;

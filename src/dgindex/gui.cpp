@@ -4487,7 +4487,14 @@ void UpdateWindowText(int mode)
         float percent;
         timing.ed = timeGetTime();
         elapsed = (timing.ed-timing.op)/1000;
-        percent = (float)(100.0*(process.run-process.start+_telli64(Infile[CurrentFile]))/(process.end-process.start));
+        if (Mode_PipeInput)
+        {
+          percent = (float)(100.0*(process.run - process.start + fpos_tracker) / (process.end - process.start));
+        }
+        else
+        {
+          percent = (float)(100.0*(process.run - process.start + _telli64(Infile[CurrentFile])) / (process.end - process.start));
+        }
         remain = (int)((timing.ed-timing.op)*(100.0-percent)/percent)/1000;
 
         sprintf(szBuffer, "%d:%02d:%02d", elapsed/3600, (elapsed%3600)/60, elapsed%60);
