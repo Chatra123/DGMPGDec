@@ -30,10 +30,84 @@ unsigned int start;
 
 int _donread(int fd, void *buffer, unsigned int count)
 {
-    int bytes;
-    bytes = _read(fd, buffer, count);
-    return bytes;
+  unsigned int read = 0;
+  //stdin
+  if (Mode_PipeInput)
+  {
+    //from HeadFile
+    if (!_eof(fd))
+      read = _read(fd, buffer, count);
+    //from stdin
+    if (read != count)
+      read += read_stdin((char*)buffer + read, count - read);
+  }
+  else
+  {
+    //file
+    read = _read(fd, buffer, count);
+    ReadSpeedLimit(read);
+  }
+
+  fpos_tracker += read; //fpos_trackerを元にフレーム位置を計算する
+  return read;
 }
+
+
+//
+//標準入力からデータ取得
+//
+int read_stdin(void *buffer, const int req_size)
+{
+  int read_sum = 0;
+  while (read_sum < req_size)
+  {
+    int tick_request = req_size - read_sum;
+    int read = _read(fdStdin, (char*)buffer + read_sum, tick_request);
+    if (read == -1)
+    {
+      // If fd is invalid.
+      // If execution is allowed to continue, the function returns -1 and sets errno to EBADF.
+      IsClosed_stdin = true;
+      return 0; //エラー終了
+    }
+    else if (read == 0)
+    {
+      IsClosed_stdin = true;
+      break; //パイプ終端、正常終了
+    }
+    read_sum += read;
+  }
+
+  GetExtraData_fromStdin = true;
+  return read_sum;
+}
+
+
+//
+//ファイル読込速度制限
+//
+void ReadSpeedLimit(unsigned int read)
+{
+  if (0 < SpeedLimit)
+  {
+    tickReadSize_speedlimit += read;  //500ms間の読込み
+    auto tickElapse = system_clock::now() - tickBeginTime_speedlimit;
+    auto elapse_ms = duration_cast<milliseconds>(tickElapse).count();
+
+    //500msごとにカウンタリセット
+    if (500 < elapse_ms)
+    {
+      tickBeginTime_speedlimit = system_clock::now();
+      tickReadSize_speedlimit = 0;
+    }
+
+    //制限をこえたらsleep_for
+    if (SpeedLimit * (500.0 / 1000.0) < tickReadSize_speedlimit)
+      std::this_thread::sleep_for(milliseconds(500 - elapse_ms));
+  }
+}
+
+
 
 #define MONO 3
 #define STEREO 0
