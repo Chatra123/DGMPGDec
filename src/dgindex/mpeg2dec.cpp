@@ -352,7 +352,12 @@ try_again:
         while (i)
         {
             if (FullPathInFiles)
-                fprintf(D2VFile, "%s\n", Infilename[NumLoadedFiles-i]);
+            {
+              if (Mode_PipeInput)
+                fprintf(D2VFile, "%s\n", Stdin_SourcePath.c_str());
+              else
+                fprintf(D2VFile, "%s\n", Infilename[NumLoadedFiles - i]);
+            }
             else
             {
                 char path[DG_MAX_PATH];
