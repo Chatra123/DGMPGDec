@@ -4201,6 +4201,8 @@ void Recovery()
             Infiletotal += Infilelength[i];
         }
     }
+    if (Mode_PipeInput)
+      Infiletotal = INT64_MAX;
 
     InvalidateRect(hwndSelect, NULL, TRUE);
     ResizeWindow(INIT_WIDTH, INIT_HEIGHT);
