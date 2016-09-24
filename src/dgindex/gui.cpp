@@ -2954,6 +2954,8 @@ void ThreadKill(int mode)
           //HeadFile削除
           _close(fdHeadFile);
           remove(HeadFilePath.c_str());
+          Infile[0] = NULL;
+          NumLoadedFiles = 0;
 
           //d2v全行読み込み
           //　\r\nは\nとして取得される。
