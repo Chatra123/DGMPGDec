@@ -473,10 +473,20 @@ static void picture_header(__int64 start, boolean HadSequenceHeader, boolean Had
             process.lba = d2v_current.lba;
         }
 
-        // This triggers if we reach the right marker position.
-        if (CurrentFile==process.endfile && process.startloc>=process.endloc)       // D2V END
+        if (Mode_PipeInput)
         {
+          if (IsClosed_stdin)
+          {
             ThreadKill(END_OF_DATA_KILL);
+          }
+        }
+        else
+        {
+          // This triggers if we reach the right marker position.
+          if (CurrentFile == process.endfile && process.startloc >= process.endloc)       // D2V END
+          {
+            ThreadKill(END_OF_DATA_KILL);
+          }
         }
 
         if (Info_Flag)
