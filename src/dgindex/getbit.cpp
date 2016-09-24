@@ -3043,8 +3043,6 @@ void UpdateInfo()
         {
             processed += Infilelength[i];
         }
-        processed += _telli64(Infile[CurrentFile]);
-        processed *= TRACK_PITCH;
         if (Mode_PipeInput)
           processed += fpos_tracker;
         else
